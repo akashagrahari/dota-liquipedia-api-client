@@ -17,6 +17,7 @@ export type IMatch = {
     status: MatchStatus;
     startTime?: Date;
     twitchStream?: string;
+    youtubeStream?: string;
     tournamentName?: string;
 }
 

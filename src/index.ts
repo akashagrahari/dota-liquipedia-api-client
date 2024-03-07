@@ -3,6 +3,8 @@ import { TeamClient } from './clients/teams';
 import { AxiosRequestClient } from './common/axios_request';
 import { ITeam } from './interfaces/teams';
 import { IMatch } from './interfaces/matches';
+import { TournamentClient } from './clients/tournaments';
+import { TournamentStatus, ITournament } from './interfaces/tournaments';
 
 /**
  * Central access point to retrieve data for Dota 2 from Liquipedia
@@ -12,6 +14,7 @@ export default class DotaLiquipediaClient {
     private requestClient: AxiosRequestClient;
     private matchesClient: MatchClient;
     private teamClient: TeamClient;
+    private tournamentClient: TournamentClient;
 
     /**
      * Create a new DotaLiquipediaClient
@@ -22,6 +25,7 @@ export default class DotaLiquipediaClient {
         this.requestClient = new AxiosRequestClient(userAgent);
         this.matchesClient = new MatchClient(this.requestClient);
         this.teamClient = new TeamClient(this.requestClient);
+        this.tournamentClient = new TournamentClient(this.requestClient);
     }
 
     /**
@@ -56,6 +60,28 @@ export default class DotaLiquipediaClient {
     public getLiveMatches(): Promise<Array<IMatch>> {
         return this.matchesClient.getLiveMatches();
     }
+
+    /**
+     * Get all completed matches
+     * @returns An awaitable Promise which will contain the list of completed Matches, if successful.
+     */
+    public getCompletedMatches(): Promise<Array<IMatch>> {
+        return this.matchesClient.getCompletedMatches();
+    }
+
+    public getTournaments(): Promise<Map<TournamentStatus, ITournament[]>> {
+        return this.tournamentClient.getTournaments();
+    }
 }
 
-export { MatchClient, TeamClient, ITeam, IMatch };
+console.log("Blah");
+// const client = new DotaLiquipediaClient('MyUserAgent');
+// client.getTournaments().then(tournaments => {
+//     console.log(tournaments);
+// }).catch(error => {
+//     console.log(error);
+// })
+
+console.log(TournamentStatus.Ongoing);
+
+export { MatchClient, TeamClient, TournamentClient, ITeam, IMatch };

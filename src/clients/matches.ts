@@ -63,6 +63,20 @@ export class MatchClient implements IMatchClient {
     }
 
     /**
+     * Get all Completed matches
+     * @returns A Promise, if successful will contain an array of IMatch objects with all details
+     */
+    getCompletedMatches(): Promise<IMatch[]> {
+        return new Promise((resolve, reject) => {
+            this.getMatches().then(matches => {
+                resolve(matches.filter(match => match.status == MatchStatus.Completed));
+            }).catch(reason => {
+                reject(reason);
+            });
+        });
+    }
+
+    /**
      * Parses the HTML response from Liquipedia into an array of IMatch objects
      * @param response The response object from the Liquipedia server, containing the HTML to parse
      * @returns An array of IMatch objects populated with details parsed from the HTML
@@ -82,7 +96,9 @@ export class MatchClient implements IMatchClient {
             const bestOf = matchDetails.querySelector('.versus abbr')?.textContent;
             const matchTimeContainer = matchDetails.querySelector('.timer-object');
             const matchTime = matchTimeContainer?.getAttribute('data-timestamp');
+            const finished = matchTimeContainer?.getAttribute('data-finished');
             const twitchStream = matchTimeContainer?.getAttribute('data-stream-twitch');
+            const youtubeStream = matchTimeContainer?.getAttribute('data-stream-youtube');
             const tournamentName = matchDetails.querySelector('.league-icon-small-image > a')?.getAttribute('title')
 
             if (!homeTeamName || !awayTeamName || !bestOf || !matchTime) {
@@ -106,13 +122,18 @@ export class MatchClient implements IMatchClient {
                 status: MatchStatus.Upcoming,
                 startTime,
                 twitchStream: twitchStream ? `https://twitch.tv/${twitchStream.toLowerCase().replace(/_/g, '')}` : undefined,
+                youtubeStream: youtubeStream ? `https://twitch.tv/${youtubeStream.toLowerCase().replace(/_/g, '')}` : undefined,
                 tournamentName
             };
 
             if (startTimestamp < Date.now()) {
                 match.status = MatchStatus.Live;
 
-                // If we're live, parse the scores
+                if (finished) {
+                    match.status = MatchStatus.Completed;
+                }
+
+                // If we're live or match is completed, parse the scores
                 const score = matchDetails.querySelector('.versus > div')?.textContent;
                 const scores = score?.split(':');
                 if (scores) {
