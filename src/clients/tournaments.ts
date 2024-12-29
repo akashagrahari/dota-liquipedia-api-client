@@ -60,7 +60,7 @@ export class TournamentClient implements ITournamentClient {
         return input.replace(/\s+/g, ' ').trim();
     }
 
-    private _getTournamentObject(tournamentBox: HTMLElement): ITournament[] {
+    private _getTournamentObject(tournamentBox: HTMLElement, status: TournamentStatus): ITournament[] {
         const tournamentRows = tournamentBox.querySelectorAll('.gridRow');
 
         const tournaments: ITournament[] = [];
@@ -84,7 +84,7 @@ export class TournamentClient implements ITournamentClient {
                 prizePool: prizePool,
                 dates: dates,
                 participantCount: participants,
-                status: TournamentStatus.Upcoming,
+                status: status,
             };
             // console.log(tournament);
             tournaments.push(tournament);
@@ -95,13 +95,13 @@ export class TournamentClient implements ITournamentClient {
     private _parseTournaments(response: IResponse): Map<TournamentStatus, ITournament[]> {
         // const htmlRoot = parse(response.parse.text['*']);
         const result = new Map<TournamentStatus, ITournament[]>();
-        const htmlRoot = parse(fs.readFileSync('src/clients/__tests__/test-tournaments-response.html').toString());
+        const htmlRoot = parse(response.parse.text['*']);
         const tournamentDetailBoxes = htmlRoot.querySelectorAll('.tournamentCard');
         const upcomingBox = tournamentDetailBoxes[0];
         const ongoingBox = tournamentDetailBoxes[1];
 
-        result.set(TournamentStatus.Ongoing, this._getTournamentObject(ongoingBox));
-        result.set(TournamentStatus.Upcoming, this._getTournamentObject(upcomingBox));
+        result.set(TournamentStatus.Ongoing, this._getTournamentObject(ongoingBox, TournamentStatus.Ongoing));
+        result.set(TournamentStatus.Upcoming, this._getTournamentObject(upcomingBox, TournamentStatus.Upcoming));
 
         return result;
     }

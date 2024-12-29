@@ -72,16 +72,10 @@ export default class DotaLiquipediaClient {
     public getTournaments(): Promise<Map<TournamentStatus, ITournament[]>> {
         return this.tournamentClient.getTournaments();
     }
+
+    public getUpcomingTournaments(): Promise<undefined | ITournament[]> {
+        return this.tournamentClient.getUpcomingTournaments();
+    }
 }
 
-console.log("Blah");
-// const client = new DotaLiquipediaClient('MyUserAgent');
-// client.getTournaments().then(tournaments => {
-//     console.log(tournaments);
-// }).catch(error => {
-//     console.log(error);
-// })
-
-console.log(TournamentStatus.Ongoing);
-
-export { MatchClient, TeamClient, TournamentClient, ITeam, IMatch };
+export { MatchClient, TeamClient, TournamentClient, ITeam, IMatch, ITournament, TournamentStatus };

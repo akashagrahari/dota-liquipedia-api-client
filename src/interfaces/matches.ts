@@ -5,9 +5,9 @@ export type IMatchTeam = {
 }
 
 export enum MatchStatus {
-    Upcoming,
-    Live,
-    Completed
+    Upcoming = "Upcoming",
+    Live = "Live",
+    Completed = "Completed"
 }
 
 export type IMatch = {

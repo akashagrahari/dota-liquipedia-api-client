@@ -1,5 +1,5 @@
 {
-  "name": "@akashagrahari/dota-liquipedia-api-client",
+  "name": "@akashagrahari/liquipedia-api-client",
   "version": "1.0.1",
   "description": "An API client to read data from Liquipedia for the video game Dota",
   "main": "./dist/index.js",

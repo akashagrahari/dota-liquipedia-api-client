@@ -1,6 +1,6 @@
 export enum TournamentStatus {
-    Upcoming,
-    Ongoing,
+    Upcoming = "Upcoming_Tournaments",
+    Ongoing = "Ongoing_Tournaments",
 }
 
 export type ITournament = {
