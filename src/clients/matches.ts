@@ -22,9 +22,11 @@ export class MatchClient implements IMatchClient {
      * @returns A Promise, if successful will contain an array of IMatch objects with all details
      */
     getMatches(): Promise<IMatch[]> {
+        const url = `https://liquipedia.net/dota2/api.php?action=parse&origin=*&format=json&page=Liquipedia:Matches`;
+        console.log("🚀 ~ MatchClient ~ getMatches ~ url:", url)
         return new Promise((resolve, reject) => {
             this.requestClient.get({
-                url: `https://liquipedia.net/dota2/api.php?action=parse&origin=*&format=json&page=Liquipedia:Matches`
+                url: url
             }).then(response => {
                 const matches = this._parseMatches(response);
                 resolve(matches);
